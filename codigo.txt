@@ -1,0 +1,70 @@
+double calc_NTU(double volt);
+
+double NTU = 0.0;
+
+const int ledVermelho = 7;
+const int ledAmarelo = 8;
+const int ledVerde = 9;
+
+void setup() 
+{
+  Serial.begin(9600);
+
+  pinMode(ledVermelho, OUTPUT);
+  pinMode(ledAmarelo, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+}
+
+void loop() 
+{
+  int sensorValue = analogRead(A0); 
+  float voltage = sensorValue * (5.0 / 1024.0);  
+
+  NTU = calc_NTU(voltage);
+
+  Serial.print("Tensao: ");
+  Serial.print(voltage);
+  Serial.print(" | NTU: ");
+  Serial.println(NTU);
+
+  if (voltage < 0.5)
+  {
+    vermelho();
+  }
+  else if (voltage < 2.5)
+  {
+    amarelo();
+  }
+  else
+  {
+    verde();
+  }
+
+  delay(500);
+}
+
+double calc_NTU(double volt)
+{
+  return -(1120.4 * volt * volt) + (5742.3 * volt) - 4352.9;
+}
+
+void vermelho()
+{
+  digitalWrite(ledVermelho, HIGH);
+  digitalWrite(ledAmarelo, LOW);
+  digitalWrite(ledVerde, LOW);
+}
+
+void amarelo()
+{
+  digitalWrite(ledVermelho, LOW);
+  digitalWrite(ledAmarelo, HIGH);
+  digitalWrite(ledVerde, LOW);
+}
+
+void verde()
+{
+  digitalWrite(ledVermelho, LOW);
+  digitalWrite(ledAmarelo, LOW);
+  digitalWrite(ledVerde, HIGH);
+}
